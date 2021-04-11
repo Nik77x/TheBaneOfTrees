@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.tags.BlockTags;
@@ -20,13 +17,18 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("blockinteractions")
-public class BlockInteractions {
+public class BlockInteractions
+{
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public BlockInteractions() {
+    public BlockInteractions()
+    {
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 
@@ -34,132 +36,114 @@ public class BlockInteractions {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    private void setup(final FMLCommonSetupEvent event) {
+    private void setup(final FMLCommonSetupEvent event)
+    {
         // some preinit code
         LOGGER.info("HELLO FROM PREINIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
     }
 
-    ArrayList<BlockPos> blockPositions = new ArrayList<BlockPos>();
+    ArrayList<BlockPos> blockPositions = new ArrayList<>();
 
     @SubscribeEvent
-    public void onBlockBroken(BlockEvent.BreakEvent event) {
-        
+    public void onBlockBroken(BlockEvent.BreakEvent event)
+    {
 
-        if (BlockTags.LOGS.getValues().contains(event.getWorld().getBlockState(event.getPos()).getBlock())) {
+        if (BlockTags.LOGS.getValues().contains(event.getWorld().getBlockState(event.getPos()).getBlock()))
+        {
             blockPositions.add(event.getPos());
-            HandleBreaking(event.getPos(), event.getWorld());
+            SearchForBlocks(event.getPos(), event.getWorld());
             BreakBlocks(event.getWorld());
         }
 
     }
 
-    /*
-     * @SubscribeEvent public void Tick(TickEvent event){
-     * 
-     * if(blockPositions.size() > 0){
-     * 
-     * 
-     * 
-     * } }
-     */
 
-    void HandleBreaking(BlockPos blockPos, IWorld world) {
 
-       /*  Timer timer = new Timer();
+    // Search recursively for wewd, if wewd is found add it to the list of blocks to break
 
-        TimerTask breakTask = new TimerTask() {
+    void SearchForBlocks(BlockPos blockPos, IWorld world)
+    {
 
-            @Override
-            public void run() { */
+        for (int x = -1; x <= 1; x++)
+            for (int y = -1; y <= 1; y++)
+                for (int z = -1; z <= 1; z++)
+                {
 
-               
-               
-                for (int x = -1; x <= 1; x++)
-                    for (int y = -1; y <= 1; y++)
-                        for (int z = -1; z <= 1; z++) {
+                    BlockPos newPos = blockPos.offset(x, y, z);
 
-                            BlockPos newPos = blockPos.offset(x, y, z);
+                    if (BlockTags.LOGS.contains(world.getBlockState(newPos).getBlock()))
+                    {
+                        if (!blockPositions.contains(newPos))
+                        {
+                            LOGGER.info("found log at " + blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ());
 
-                            if (BlockTags.LOGS.contains(world.getBlockState(newPos).getBlock())) {
-                                if (!blockPositions.contains(newPos)) {
-                                    LOGGER.info("found log at " + blockPos.getX() + " " + blockPos.getY() + " "  + blockPos.getZ());
+                            blockPositions.add(newPos);
 
-                                    blockPositions.add(newPos);
+                            SearchForBlocks(newPos, world);
 
-                                    HandleBreaking(newPos, world);
-
-                                }
-
-                               /*  timer.cancel(); */
-
-                            }
                         }
 
-            }
+                    }
+                }
 
-      /*   }; */
+    }
 
-       /*  LOGGER.info("scheduling task");
-        timer.schedule(breakTask, 250);
- */
-   //}
 
-    boolean Done = false;
 
-    void BreakBlocks(IWorld world) {
+    void BreakBlocks(IWorld world)
+    {
 
         LOGGER.info("breaking blocks");
         LOGGER.info("blockPositions = " + blockPositions.toString());
-     
 
-       // while (blockPositions.isEmpty() == false) {
+        Timer timer = new Timer();
 
-           // if (Done = true) {
-            Timer timer = new Timer();
+        TimerTask breakBlockTask = new TimerTask()
+        {
 
-            TimerTask breakBlockTask = new TimerTask() {
-    
-                @Override
-                public void run() {
-    
-                    Done = false;
-    
-                    if (!blockPositions.isEmpty()){
-    
-                        // get and remove block from list
-                        BlockPos block = blockPositions.get(0);
-                        blockPositions.remove(0);
-    
-                        // Destroy the block
-                        LOGGER.info("breaking block");
-                        world.destroyBlock(block, true);
-    
-                    }
-                    if(blockPositions.isEmpty()){
+            @Override
+            public void run()
+            {
 
-                        timer.cancel();
-        
-                    }
-                    Done = true;
+
+
+                if (!blockPositions.isEmpty())
+                {
+
+
+                    // get and remove block from list
+                    BlockPos block = blockPositions.get(0);
+                    blockPositions.remove(0);
+
+                    // Destroy the block only if it's still wood
+                    LOGGER.info("breaking block");
+                    if(BlockTags.LOGS.contains(world.getBlockState(block).getBlock()))   world.destroyBlock(block, true);
+
                 }
-    
-            };
-            long delay = Math.round(Math.abs(250 / (blockPositions.size() * 0.2 )) + 25);
-            LOGGER.info("delay set to " + delay);
-            timer.scheduleAtFixedRate(breakBlockTask, delay, delay);
+                else
+                {
 
+                    timer.cancel();
 
-          //  }
+                }
 
-      //  }
+            }
+
+        };
+        long delay = Math.round(Math.abs(250 / (blockPositions.size() * 0.2)) + 25);
+        LOGGER.info("delay set to " + delay);
+        timer.scheduleAtFixedRate(breakBlockTask, delay, delay);
 
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-    class RegistryEvents {
+
+    static class RegistryEvents
+    {
         @SubscribeEvent
-        public void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
+        public void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent)
+        {
             // register a new block here
             // LOGGER.info("HELLO from Register Block");
         }
