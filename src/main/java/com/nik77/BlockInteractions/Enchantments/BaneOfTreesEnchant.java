@@ -22,7 +22,7 @@ public class BaneOfTreesEnchant extends Enchantment
     @Override
     public int getMaxLevel()
     {
-        return 3;
+        return 10;
     }
 
     @Override

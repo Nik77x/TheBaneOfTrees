@@ -1,7 +1,6 @@
 package com.nik77.BlockInteractions.Functions;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -15,21 +14,22 @@ import com.nik77.BlockInteractions.BlockInteractions;
 
 public class BlockDestroyer
 {
-    public static int  RecursionLimit = 4200;
-    public static int RecursionLevel = 0;
+
+
 
     public ArrayList<BlockPos> blockPositions = new ArrayList<>();
 
     Logger LOGGER = BlockInteractions.LOGGER;
 
-    public void BreakAll(BlockPos startPosition, IWorld world)
+    public void BreakAll(BlockPos startPosition, IWorld world, long delayInMillis, int timesToBreak, int blockLimit)
     {
-        if(blockPositions.contains(startPosition)){
+        if (blockPositions.contains(startPosition))
+        {
             return;
         }
         blockPositions.add(startPosition);
-        SearchForBlocks(startPosition, world);
-        BreakBlocks(world);
+        SearchForBlocks(startPosition, world, blockLimit);
+        BreakBlocks(world, delayInMillis, timesToBreak);
 
     }
 
@@ -39,13 +39,13 @@ public class BlockDestroyer
      Search recursively for wewd, if wewd is found add it to the list of blocks to break
     */
 
-    public void SearchForBlocks(BlockPos blockPos, IWorld world)
+    public void SearchForBlocks(BlockPos blockPos, IWorld world, int blockLimit)
     {
-       /* if(RecursionLevel >= RecursionLimit){
-            RecursionLevel = 0;
+
+        if (blockPositions.size() >= blockLimit)
+        {
             return;
-        }else
-        RecursionLevel++;*/
+        }
 
         for (int x = -1; x <= 1; x++)
             for (int y = -1; y <= 1; y++)
@@ -58,27 +58,32 @@ public class BlockDestroyer
                     {
                         if (!blockPositions.contains(newPos))
                         {
-                            //LOGGER.info("found log at " + blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ());
 
-                            blockPositions.add(newPos);
-                            //LOGGER.info("searching blocks");
-                            SearchForBlocks(newPos, world);
+                            if (blockPositions.size() <= blockLimit)
+                            {
 
+                                blockPositions.add(newPos);
+                                SearchForBlocks(newPos, world, blockLimit);
+                            }
+
+                            else
+                                return;
                         }
 
                     }
                 }
 
+        //kill @e[type=!minecraft:player]
+        ///fill ~1 ~ ~1 ~5 ~-5 ~5 minecraft:spruce_log
+
     }
 
-    public void BreakBlocks(IWorld world)
+    public void BreakBlocks(IWorld world, long delay, int TimesToBreak)
     {
 
-        //LOGGER.info("breaking blocks");
-        //LOGGER.info("blockPositions = " + blockPositions.toString());
-
         Timer timer = new Timer();
-        Random rand = new Random();
+
+        //Random rand = new Random();
 
         TimerTask breakBlockTask = new TimerTask()
         {
@@ -86,40 +91,38 @@ public class BlockDestroyer
             @Override
             public void run()
             {
-                try{
+                for (int i = 0; i < TimesToBreak; i++)
+                {
 
                     if (!blockPositions.isEmpty())
                     {
 
-                        // get and remove block from list
-                        int index = 0;//rand.nextInt( blockPositions.size());
+                        int index = 0;  //rand.nextInt( blockPositions.size());
 
+                        // get and remove block from list
                         BlockPos block = blockPositions.get(index);
                         blockPositions.remove(index);
 
                         // Destroy the block only if it's still wood
-                        //LOGGER.info("breaking block");
                         if (BlockTags.LOGS.contains(world.getBlockState(block).getBlock()))
                         {
                             world.destroyBlock(block, true);
                         }
-
-
-
                     }
                     else
                     {
                         timer.cancel();
+                        return;
                     }
-                }catch (IndexOutOfBoundsException e){LOGGER.error("index out of bounds " + e.getCause());}
-                catch (IllegalStateException e){LOGGER.error("timer rai into an illegal state what th fuck " + e.getCause() + e.getMessage());}
+
+                }
 
             }
 
         };
-        //long delay = Math.round(Math.abs(250 / (blockPositions.size() * 0.2)) + 40);
+
         LOGGER.info("scheduling timer");
-        timer.scheduleAtFixedRate(breakBlockTask, 40, 40);
+        timer.scheduleAtFixedRate(breakBlockTask, delay, delay);
 
     }
 
