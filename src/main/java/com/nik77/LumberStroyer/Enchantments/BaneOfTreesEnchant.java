@@ -1,4 +1,4 @@
-package com.nik77.BlockInteractions.Enchantments;
+package com.nik77.LumberStroyer.Enchantments;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;

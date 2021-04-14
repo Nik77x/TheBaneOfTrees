@@ -1,4 +1,4 @@
-package com.nik77.BlockInteractions;
+package com.nik77.LumberStroyer;
 
 import java.util.Map;
 
@@ -11,24 +11,16 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-import com.nik77.BlockInteractions.Functions.BlockDestroyer;
-import com.nik77.BlockInteractions.Setup.ModEnchantments;
+import com.nik77.LumberStroyer.Functions.BlockDestroyer;
+import com.nik77.LumberStroyer.Setup.ModEnchantments;
 
-@EventBusSubscriber(modid = BlockInteractions.MODID)
+@EventBusSubscriber(modid = LumberStroyer.MODID)
 public class EventHandler
 {
-    //public static Logger LOGGER = BlockInteractions.LOGGER;
-
-    public static BlockDestroyer blockDestroyer = new BlockDestroyer();
 
     @SubscribeEvent
     public static void onBlockBroken(BlockEvent.BreakEvent event)
     {
-        long delay;
-        int enchLevel;
-        int blockLimit;
-        int timesToBreak;
-
 
         ItemStack heldItem = event.getPlayer().getMainHandItem();
         if (heldItem.getItem() instanceof AxeItem)
@@ -36,26 +28,21 @@ public class EventHandler
 
             Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(heldItem);
 
-            if (enchantments.get(ModEnchantments.BANE_OF_TREES.get()) != null)
+            if (enchantments.containsKey(ModEnchantments.BANE_OF_TREES.get()))
             {
 
-                enchLevel = enchantments.get(ModEnchantments.BANE_OF_TREES.get());
+                int enchLevel = enchantments.get(ModEnchantments.BANE_OF_TREES.get());
 
-                timesToBreak = 1;
+                BlockDestroyer blockDestroyer = new BlockDestroyer(enchLevel);
 
-                blockLimit = 50 * enchLevel;
-
-                delay = (long) 501 - 50L * enchLevel;
                 if (BlockTags.LOGS.getValues().contains(event.getWorld().getBlockState(event.getPos()).getBlock()))
                 {
-                    blockDestroyer.BreakAll(event.getPos(), event.getWorld(), delay, timesToBreak, blockLimit);
+                    blockDestroyer.BreakAll(event.getPos(), event.getWorld());
 
                 }
             }
 
         }
-
-
 
     }
 

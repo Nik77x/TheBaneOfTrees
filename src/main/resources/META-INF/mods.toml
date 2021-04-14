@@ -15,13 +15,13 @@ license="All rights reserved"
 
 
 # A URL to refer people to when problems occur with this mod
-#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
+issueTrackerURL="https://github.com/nicobomber77/BlockDestroyer/issues" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 
 
 # The modid of the mod
-modId="blockinteractions" #mandatory
+modId="lumberstroyer" #mandatory
 
 
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
@@ -43,7 +43,7 @@ displayName="Block Interactions" #mandatory
 
 
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="blockinteractions.png" #optional
+logoFile="lumberstroyer.png" #optional
 
 
 # A text field displayed in the mod UI
@@ -56,10 +56,12 @@ authors="nik77" #optional
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-Adds more block interactions
+Want to be able to destroy trees faster? You are in the right place!
+This mod adds a new enchantment "Bane Of Trees" that goes from 1 to 10, if you have this enchant on an axe trees will be magically destroyed.
+The speed depends on the level of the enchant.
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.blockinteractions]] #optional
+[[dependencies.lumberstroyer]] #optional
     # the modid of the dependency
     modId="forge" #mandatory
     # Does this dependency have to exist - if not, ordering below must be specified
@@ -72,7 +74,7 @@ Adds more block interactions
     side="BOTH"
 
 # Here's another dependency
-[[dependencies.blockinteractions]]
+[[dependencies.lumberstroyer]]
     modId="minecraft"
     mandatory=true
 

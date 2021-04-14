@@ -1,9 +1,9 @@
-package com.nik77.BlockInteractions.Setup;
+package com.nik77.LumberStroyer.Setup;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.fml.RegistryObject;
 
-import com.nik77.BlockInteractions.Enchantments.BaneOfTreesEnchant;
+import com.nik77.LumberStroyer.Enchantments.BaneOfTreesEnchant;
 
 public class ModEnchantments
 {

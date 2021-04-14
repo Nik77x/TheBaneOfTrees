@@ -1,4 +1,4 @@
-package com.nik77.BlockInteractions.Functions;
+package com.nik77.LumberStroyer.Functions;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -8,28 +8,38 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
-import org.apache.logging.log4j.Logger;
-
-import com.nik77.BlockInteractions.BlockInteractions;
-
 public class BlockDestroyer
 {
 
-
-
     public ArrayList<BlockPos> blockPositions = new ArrayList<>();
 
-    Logger LOGGER = BlockInteractions.LOGGER;
 
-    public void BreakAll(BlockPos startPosition, IWorld world, long delayInMillis, int timesToBreak, int blockLimit)
+    public long Delay;
+
+    private final int BlockLimit;
+
+    public int TimesToBreak = 1;
+
+    public BlockDestroyer(int enchantmentLevel){
+
+        this.BlockLimit = 50 * enchantmentLevel;
+
+        this.Delay = 501 - 50L * enchantmentLevel;
+
+
+    }
+
+
+
+    public void BreakAll(BlockPos startPosition, IWorld world)
     {
         if (blockPositions.contains(startPosition))
         {
             return;
         }
         blockPositions.add(startPosition);
-        SearchForBlocks(startPosition, world, blockLimit);
-        BreakBlocks(world, delayInMillis, timesToBreak);
+        SearchForBlocks(startPosition, world, BlockLimit);
+        BreakBlocks(world, Delay, TimesToBreak);
 
     }
 
@@ -72,9 +82,6 @@ public class BlockDestroyer
 
                     }
                 }
-
-        //kill @e[type=!minecraft:player]
-        ///fill ~1 ~ ~1 ~5 ~-5 ~5 minecraft:spruce_log
 
     }
 
@@ -121,7 +128,6 @@ public class BlockDestroyer
 
         };
 
-        LOGGER.info("scheduling timer");
         timer.scheduleAtFixedRate(breakBlockTask, delay, delay);
 
     }
