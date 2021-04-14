@@ -5,9 +5,9 @@ license="GPLv3"
 issueTrackerURL="https://github.com/nicobomber77/BlockDestroyer/issues"
 
 [[mods]] #mandatory
-modId="lumberstroyer" #mandatory
+modId="thebaneoftrees" #mandatory
 version="1.0" #mandatory
-displayName="LumberStroyer" #mandatory
+displayName="The bane of trees" #mandatory
 
 # A URL for the "homepage" for this mod, displayed in the mod UI
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional

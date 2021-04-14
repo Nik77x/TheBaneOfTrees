@@ -1,4 +1,4 @@
-package com.nik77.LumberStroyer;
+package com.nik77.TheBaneOfTrees;
 
 import java.util.Map;
 
@@ -11,10 +11,10 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-import com.nik77.LumberStroyer.Functions.BlockDestroyer;
-import com.nik77.LumberStroyer.Setup.ModEnchantments;
+import com.nik77.TheBaneOfTrees.Functions.BlockDestroyer;
+import com.nik77.TheBaneOfTrees.Setup.ModEnchantments;
 
-@EventBusSubscriber(modid = LumberStroyer.MODID)
+@EventBusSubscriber(modid = TheBaneOfTrees.MODID)
 public class EventHandler
 {
 

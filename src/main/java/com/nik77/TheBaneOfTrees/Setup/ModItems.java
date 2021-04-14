@@ -1,4 +1,4 @@
-package com.nik77.LumberStroyer.Setup;
+package com.nik77.TheBaneOfTrees.Setup;
 
 public class ModItems
 {
