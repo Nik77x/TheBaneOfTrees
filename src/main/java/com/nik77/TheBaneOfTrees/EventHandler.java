@@ -4,10 +4,12 @@ import java.util.Map;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
@@ -21,6 +23,7 @@ public class EventHandler
     @SubscribeEvent
     public static void onBlockBroken(BlockEvent.BreakEvent event)
     {
+        PlayerEntity playerEntity = event.getPlayer();
 
         ItemStack heldItem = event.getPlayer().getMainHandItem();
         if (heldItem.getItem() instanceof AxeItem)
@@ -37,7 +40,9 @@ public class EventHandler
 
                 if (BlockTags.LOGS.getValues().contains(event.getWorld().getBlockState(event.getPos()).getBlock()))
                 {
-                    blockDestroyer.BreakAll(event.getPos(), event.getWorld());
+
+
+                    blockDestroyer.BreakAll(event.getPos(), event.getWorld(), heldItem, playerEntity);
 
                 }
             }
@@ -45,5 +50,7 @@ public class EventHandler
         }
 
     }
+
+
 
 }

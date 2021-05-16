@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
@@ -31,7 +34,7 @@ public class BlockDestroyer
 
 
 
-    public void BreakAll(BlockPos startPosition, IWorld world)
+    public void BreakAll(BlockPos startPosition, IWorld world, ItemStack heldItem, PlayerEntity playerEntity)
     {
         if (blockPositions.contains(startPosition))
         {
@@ -39,7 +42,7 @@ public class BlockDestroyer
         }
         blockPositions.add(startPosition);
         SearchForBlocks(startPosition, world, BlockLimit);
-        BreakBlocks(world, Delay, TimesToBreak);
+        BreakBlocks(world, Delay, TimesToBreak, heldItem, playerEntity);
 
     }
 
@@ -85,7 +88,7 @@ public class BlockDestroyer
 
     }
 
-    public void BreakBlocks(IWorld world, long delay, int TimesToBreak)
+    public void BreakBlocks(IWorld world, long delay, int TimesToBreak, ItemStack heldItem, PlayerEntity playerEntity)
     {
 
         Timer timer = new Timer();
@@ -113,7 +116,15 @@ public class BlockDestroyer
                         // Destroy the block only if it's still wood
                         if (BlockTags.LOGS.contains(world.getBlockState(block).getBlock()))
                         {
-                            world.destroyBlock(block, true);
+
+
+                           if(heldItem.getDamageValue()  != heldItem.getMaxDamage() ) {
+                               world.destroyBlock(block, true);
+                               heldItem.hurtAndBreak(1, playerEntity, playerEntity1 -> {playerEntity1.broadcastBreakEvent(EquipmentSlotType.MAINHAND);});
+                           }else {
+                               timer.cancel();
+                               return;
+                           }
                         }
                     }
                     else
