@@ -3,7 +3,7 @@ package com.nik77.TheBaneOfTrees.Setup;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.fml.RegistryObject;
 
-import com.nik77.LumberStroyer.Enchantments.BaneOfTreesEnchant;
+import com.nik77.TheBaneOfTrees.Enchantments.BaneOfTreesEnchant;
 import com.nik77.TheBaneOfTrees.Setup.Registration;
 
 public class ModEnchantments

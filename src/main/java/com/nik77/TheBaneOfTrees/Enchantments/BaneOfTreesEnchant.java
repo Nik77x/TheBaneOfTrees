@@ -1,4 +1,4 @@
-package com.nik77.LumberStroyer.Enchantments;
+package com.nik77.TheBaneOfTrees.Enchantments;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
