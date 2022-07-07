@@ -7,8 +7,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
 
 public class BlockDestroyer
@@ -34,7 +36,7 @@ public class BlockDestroyer
 
 
 
-    public void BreakAll(BlockPos startPosition, LevelAccessor world)
+    public void BreakAll(BlockPos startPosition, LevelAccessor world, ItemStack heldItem, Player player)
     {
         if (blockPositions.contains(startPosition))
         {
@@ -42,7 +44,7 @@ public class BlockDestroyer
         }
         blockPositions.add(startPosition);
         SearchForBlocks(startPosition, world, BlockLimit);
-        BreakBlocks(world, Delay, TimesToBreak, heldItem, playerEntity);
+        BreakBlocks(world, Delay, TimesToBreak, heldItem, player);
 
     }
 
@@ -90,7 +92,7 @@ public class BlockDestroyer
 
     }
 
-    public void BreakBlocks(LevelAccessor world, long delay, int TimesToBreak)
+    public void BreakBlocks(LevelAccessor world, long delay, int TimesToBreak, ItemStack heldItem, Player player)
     {
 
         Timer timer = new Timer();
@@ -125,7 +127,7 @@ public class BlockDestroyer
 
                            if(heldItem.getDamageValue()  != heldItem.getMaxDamage() ) {
                                world.destroyBlock(block, true);
-                               heldItem.hurtAndBreak(1, playerEntity, playerEntity1 -> {playerEntity1.broadcastBreakEvent(EquipmentSlotType.MAINHAND);});
+                               heldItem.hurtAndBreak(1, player, playerEntity1 -> {playerEntity1.broadcastBreakEvent(EquipmentSlot.MAINHAND);});
                            }else {
                                timer.cancel();
                                return;
