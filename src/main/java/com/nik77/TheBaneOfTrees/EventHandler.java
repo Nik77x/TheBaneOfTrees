@@ -1,12 +1,14 @@
 package com.nik77.TheBaneOfTrees;
 
+import static com.nik77.TheBaneOfTrees.UsefulFunctions.TagContains;
+
 import java.util.Map;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -35,7 +37,7 @@ public class EventHandler
 
                 BlockDestroyer blockDestroyer = new BlockDestroyer(enchLevel);
 
-                if (BlockTags.LOGS.getValues().contains(event.getWorld().getBlockState(event.getPos()).getBlock()))
+                if (TagContains(event.getWorld().getBlockState(event.getPos()).getBlock(), BlockTags.LOGS));
                 {
                     blockDestroyer.BreakAll(event.getPos(), event.getWorld());
 

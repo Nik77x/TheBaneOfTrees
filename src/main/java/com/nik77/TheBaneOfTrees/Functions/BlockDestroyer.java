@@ -1,12 +1,14 @@
 package com.nik77.TheBaneOfTrees.Functions;
 
+import static com.nik77.TheBaneOfTrees.UsefulFunctions.TagContains;
+
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.level.LevelAccessor;
 
 public class BlockDestroyer
 {
@@ -31,7 +33,7 @@ public class BlockDestroyer
 
 
 
-    public void BreakAll(BlockPos startPosition, IWorld world)
+    public void BreakAll(BlockPos startPosition, LevelAccessor world)
     {
         if (blockPositions.contains(startPosition))
         {
@@ -49,7 +51,7 @@ public class BlockDestroyer
      Search recursively for wewd, if wewd is found add it to the list of blocks to break
     */
 
-    public void SearchForBlocks(BlockPos blockPos, IWorld world, int blockLimit)
+    public void SearchForBlocks(BlockPos blockPos, LevelAccessor world, int blockLimit)
     {
 
         if (blockPositions.size() >= blockLimit)
@@ -64,7 +66,7 @@ public class BlockDestroyer
 
                     BlockPos newPos = blockPos.offset(x, y, z);
 
-                    if (BlockTags.LOGS.contains(world.getBlockState(newPos).getBlock()))
+                    if (TagContains(world.getBlockState(newPos).getBlock(), BlockTags.LOGS))
                     {
                         if (!blockPositions.contains(newPos))
                         {
@@ -75,9 +77,11 @@ public class BlockDestroyer
                                 blockPositions.add(newPos);
                                 SearchForBlocks(newPos, world, blockLimit);
                             }
-
                             else
+                            {
                                 return;
+                            }
+
                         }
 
                     }
@@ -85,7 +89,7 @@ public class BlockDestroyer
 
     }
 
-    public void BreakBlocks(IWorld world, long delay, int TimesToBreak)
+    public void BreakBlocks(LevelAccessor world, long delay, int TimesToBreak)
     {
 
         Timer timer = new Timer();
@@ -110,8 +114,11 @@ public class BlockDestroyer
                         BlockPos block = blockPositions.get(index);
                         blockPositions.remove(index);
 
+
                         // Destroy the block only if it's still wood
-                        if (BlockTags.LOGS.contains(world.getBlockState(block).getBlock()))
+                        boolean isALog = TagContains(world.getBlockState(block).getBlock(), BlockTags.LOGS);
+
+                        if (isALog)
                         {
                             world.destroyBlock(block, true);
                         }
@@ -132,4 +139,7 @@ public class BlockDestroyer
 
     }
 
+
+
 }
+
