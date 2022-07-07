@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.LevelAccessor;
 
@@ -41,7 +42,7 @@ public class BlockDestroyer
         }
         blockPositions.add(startPosition);
         SearchForBlocks(startPosition, world, BlockLimit);
-        BreakBlocks(world, Delay, TimesToBreak);
+        BreakBlocks(world, Delay, TimesToBreak, heldItem, playerEntity);
 
     }
 
@@ -120,7 +121,15 @@ public class BlockDestroyer
 
                         if (isALog)
                         {
-                            world.destroyBlock(block, true);
+
+
+                           if(heldItem.getDamageValue()  != heldItem.getMaxDamage() ) {
+                               world.destroyBlock(block, true);
+                               heldItem.hurtAndBreak(1, playerEntity, playerEntity1 -> {playerEntity1.broadcastBreakEvent(EquipmentSlotType.MAINHAND);});
+                           }else {
+                               timer.cancel();
+                               return;
+                           }
                         }
                     }
                     else

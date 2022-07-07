@@ -4,6 +4,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.registries.RegistryObject;
 
 import com.nik77.TheBaneOfTrees.Enchantments.BaneOfTreesEnchant;
+import com.nik77.TheBaneOfTrees.Setup.Registration;
 
 public class ModEnchantments
 {
